@@ -7,6 +7,7 @@ import {
   Modelproduct,
   ModelState,
   Product,
+  Usuario,
 } from "../model/model";
 const router = Router();
 
@@ -367,7 +368,6 @@ router.get("/OrderForPrice", async (req, res) => {
       }
       return 0;
     });
-    
 
     const result = {
       products,
@@ -375,6 +375,34 @@ router.get("/OrderForPrice", async (req, res) => {
     };
 
     res.status(201).send(products);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/createUser", async (req, res) => {
+  try {
+    const { body } = req;
+    const usuario = new Usuario({
+      email: body.email,
+      password: body.password,
+    });
+
+    await usuario.save();
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/loginUser", async (req, res) => {
+  try {
+    const { body } = req;
+    const userPast = await Usuario.findOne({ email: body.email });
+    if (body.password === userPast.password) {
+      res.status(201).send("Contraseña correcta");
+    } else {
+      res.status(401).send("Contraseña incorrecta");
+    }
   } catch (error) {
     res.status(501).send(error.message);
   }

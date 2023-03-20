@@ -152,6 +152,18 @@ const ColorSchema = new mongoose.Schema({
   },
 });
 
+const UsuarioSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+});
+
+export const Usuario = mongoose.model("Usuario", UsuarioSchema);
 export const Modelproduct = mongoose.model("Modelproduct", ModelProductSchema);
 export const Product = mongoose.model("Product", ProductSchema);
 export const ModelState = mongoose.model("ModelState", ModelStateSchema);
