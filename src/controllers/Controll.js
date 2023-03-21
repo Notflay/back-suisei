@@ -120,9 +120,13 @@ router.get("/allProducts", async (req, res) => {
 router.get("/product/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const prodduct = await Modelproduct.findOne({ _id: id }).populate(
-      "productId"
-    );
+    const prodduct = await Modelproduct.findOne({ _id: id })
+      .populate("productId")
+      .populate("modelStatId")
+      .populate("modelMoneyValueId")
+      .populate("modelPerColors.modelProductId")
+      .populate("modelPerColors.color")
+      .populate("modelPerColors.clothingSize");
     res.status(201).send(prodduct);
   } catch (error) {
     res.status(501).send(error.message);
