@@ -161,6 +161,13 @@ const UsuarioSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  carrito: [
+    {
+      _id: { type: Schema.Types.ObjectId, ref: "Product" },
+      cantidad: { type: Number, required: true },
+      talla: { type: String, required: true },
+    },
+  ],
 });
 
 export const Usuario = mongoose.model("Usuario", UsuarioSchema);

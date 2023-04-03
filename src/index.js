@@ -271,7 +271,7 @@ db.authors.updateOne(
   },
   {
     books: {
-      "3":  {
+      3: {
         $inc: {
           cantidad: 1,
         },
@@ -279,8 +279,6 @@ db.authors.updateOne(
     },
   }
 );
-
-
 
 db.blogs.updateOne(
   {

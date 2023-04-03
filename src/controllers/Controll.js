@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Types } from "mongoose";
 import {
+  Carrito,
   ClothingSize,
   Color,
   ModelMoney,
@@ -393,6 +394,7 @@ router.post("/createUser", async (req, res) => {
     });
 
     await usuario.save();
+    res.status(201).send(usuario);
   } catch (error) {
     res.status(501).send(error.message);
   }
@@ -403,10 +405,109 @@ router.post("/loginUser", async (req, res) => {
     const { body } = req;
     const userPast = await Usuario.findOne({ email: body.email });
     if (body.password === userPast.password) {
-      res.status(201).send("Contraseña correcta");
+      res.status(201).send(userPast._id);
     } else {
       res.status(401).send("Contraseña incorrecta");
     }
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/createCarrito/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { body } = req;
+    console.log(body);
+    await Usuario.findByIdAndUpdate(
+      { _id: `${id}` },
+      {
+        $push: {
+          carrito: body,
+        },
+      }
+    );
+
+    res.status(201).send("Actualizado exitosamente");
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/getUsuario/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const usuario = await Usuario.findById(id);
+
+    res.status(201).send(usuario);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/update/items", async (req, res) => {
+  try {
+    /* const tallas = await ClothingSize.updateMany(
+      { sizeShort: "30-32-34" },
+      {
+        sizeShort: "S-M-L",
+        "size.rows.0.1": "S",
+        "size.rows.1.1": "M",
+        "size.rows.2.1": "L",
+      }
+    ); */
+
+    /* await Promise.all(
+      tallas.map(async (talla) => {
+        await ClothingSize.findByIdAndUpdate(
+          { _id: `${talla._id}` },
+          {
+            "size.rows.0.0": `${Math.ceil(Math.random() * (20 - 10) + 10)}`,
+            "size.rows.1.0": `${Math.ceil(Math.random() * (20 - 10) + 10)}`,
+            "size.rows.2.0": `${Math.ceil(Math.random() * (20 - 10) + 10)}`,
+          }
+        );
+      })
+    ); */
+
+    res.status(201).send(tallas);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.put("/deletecart/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { body } = req;
+
+    const elementId = Object.keys(body)[0];
+
+    await Usuario.findByIdAndUpdate(
+      { _id: id },
+      {
+        $pull: {
+          carrito: {
+            _id: Types.ObjectId(`${elementId}`),
+          },
+        },
+      }
+    );
+    res.status(201).send("Eliminado extiosamente");
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/countCart/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await Usuario.findOne({ _id: id });
+    const cantidad = user.carrito.length;
+
+    res.status(201).send({ cantidad: cantidad });
   } catch (error) {
     res.status(501).send(error.message);
   }
