@@ -17,7 +17,7 @@ router.post("/create", async (req, res) => {
     const { body } = req;
 
     /*   let product = await Product.findOne({ _id: body.data.product.id }); */
-    console.log(body);
+
     if (body.product !== undefined) {
       const prod = await Product.findOne({ _id: body.product.id });
       const mod = await ModelState.findOne({ _id: body.modelState.id });
@@ -292,6 +292,51 @@ router.get("/getTypeProd", async (req, res) => {
   try {
     const tipos = await Product.find();
     res.status(201).send(tipos);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/getTypeColor", async (req, res) => {
+  try {
+    const colores = await Color.find();
+    res.status(201).send(colores);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/getTypeModel", async (req, res) => {
+  try {
+    const modelos = await ModelState.find();
+    res.status(201).send(modelos);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/getTypeMoney", async (req, res) => {
+  try {
+    const money = await ModelMoney.find();
+    res.status(201).send(money);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/createClothing", async (req, res) => {
+  try {
+    const { body } = req;
+    const clothing = new ClothingSize({
+      disclamer: body.disclamer,
+      sizeShort: body.sizeShort,
+      name: body.name,
+      size: {
+        cols: ["Stock", "Talla"],
+        rows: body.rows,
+      },
+    });
+    res.status(201).send(clothing);
   } catch (error) {
     res.status(501).send(error.message);
   }
