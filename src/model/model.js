@@ -170,6 +170,79 @@ const UsuarioSchema = new mongoose.Schema({
   ],
 });
 
+const ComprobanteSchema = new mongoose.Schema({
+  clienteId: {
+    type: Schema.Types.ObjectId,
+    ref: "Usuario",
+    required: true,
+  },
+  nombres: {
+    nombre: {
+      type: String,
+      required: true,
+    },
+    apellido: {
+      type: String,
+      required: true,
+    },
+  },
+  tipoComprobante: {
+    type: String,
+    required: true,
+  },
+  documentoIde: {
+    type: String,
+    required: true,
+  },
+  numDocumento: {
+    type: Number,
+    required: true,
+  },
+  region: {
+    type: String,
+    required: true,
+  },
+  provincia: {
+    type: String,
+    required: true,
+  },
+  distrito: {
+    type: String,
+    required: true,
+  },
+  direccion: {
+    type: String,
+    required: true,
+  },
+  referencia: {
+    type: String,
+    required: true,
+  },
+  telefono: {
+    type: Number,
+    required: true,
+  },
+  total: {
+    type: Number,
+    required: true,
+  },
+  tipoTarjeta: {
+    type: String,
+    required: true,
+  },
+  productId: [
+    {
+      _id: {
+        type: Schema.Types.ObjectId,
+        ref: "Modelproduct",
+        required: true,
+      },
+      cantidad: { type: Number, required: true },
+      talla: { type: String, required: true },
+    },
+  ],
+});
+
 export const Usuario = mongoose.model("Usuario", UsuarioSchema);
 export const Modelproduct = mongoose.model("Modelproduct", ModelProductSchema);
 export const Product = mongoose.model("Product", ProductSchema);
@@ -177,3 +250,4 @@ export const ModelState = mongoose.model("ModelState", ModelStateSchema);
 export const ModelMoney = mongoose.model("ModelMoney", ModelMoneySchema);
 export const ClothingSize = mongoose.model("ClothingSize", ClothingSizeSchema);
 export const Color = mongoose.model("Color", ColorSchema);
+export const Comprobante = mongoose.model("Comprobante", ComprobanteSchema);

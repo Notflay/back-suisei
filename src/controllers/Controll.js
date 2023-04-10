@@ -4,13 +4,20 @@ import {
   Carrito,
   ClothingSize,
   Color,
+  Comprobante,
   ModelMoney,
   Modelproduct,
   ModelState,
   Product,
   Usuario,
 } from "../model/model";
+import Stripe from "stripe";
+
 const router = Router();
+
+const stripe = new Stripe(
+  "sk_test_51MWLL2L4SPD0MxRcfb9N2nCJEha2yHeq5KGmai4aSsE0HkYaAbXpt4Vb77CWyKmGJ7YIu7JFr8bhIxMsxUS4dSL700mDqxEyS1"
+);
 
 router.post("/create", async (req, res) => {
   try {
@@ -553,6 +560,61 @@ router.get("/countCart/:id", async (req, res) => {
     const cantidad = user.carrito.length;
 
     res.status(201).send({ cantidad: cantidad });
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/pay", async (req, res) => {
+  try {
+    console.log("si");
+    let { id, amount, description } = req.body;
+
+    amount = parseInt(amount) * 100;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      description: description,
+      currency: "USD",
+      payment_method: id,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      confirm: true,
+      return_url: "http://localhost:5173",
+    });
+
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.send({ error: error.message });
+  }
+});
+
+router.post("/createCom", async (req, res) => {
+  try {
+    const { body } = req;
+
+    const comprobante = new Comprobante({
+      clienteId: body.clientId,
+      nombres: {
+        nombre: body.nombre,
+        apellido: body.apellido,
+      },
+      tipoComprobante: body.tipoComprobante,
+      documentoIde: body.documentoIde,
+      numDocumento: body.numDocumento,
+      region: body.region,
+      provincia: body.provincia,
+      distrito: body.distrito,
+      direccion: body.direccion,
+      referencia: body.referencia,
+      telefono: body.telefono,
+      total: body.total,
+      tipoTarjeta: body.tipoTarjeta,
+      productId: body.productId,
+    });
+    await comprobante.save();
+    res.status(201).send(comprobante);
   } catch (error) {
     res.status(501).send(error.message);
   }
