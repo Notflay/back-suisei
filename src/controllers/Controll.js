@@ -116,6 +116,60 @@ router.post("/create", async (req, res) => {
   }
 });
 
+router.post("/newProduct", async (req, res) => {
+  try {
+    const { body } = req;
+
+    /*  const mdlSize = {
+      name
+      name: body.modelPerColors[0].clothingSize.s,
+
+    } */
+
+    const size = new ClothingSize({
+      name: "Talla General",
+      sizeShort: "S-M-L",
+      disclamer: "La talla es referencial",
+      size: {
+        cols: ["Stock", "Talla"],
+        rows: [
+          [body.modelPerColors[0].clothingSize.s, "S"],
+          [body.modelPerColors[0].clothingSize.m, "M"],
+          [body.modelPerColors[0].clothingSize.l, "L"],
+        ],
+      },
+    });
+
+    await size.save();
+
+    const modelProduct = await Modelproduct({
+      name: body.name,
+      description: body.description,
+      isObservationVisible: body.isObservationVisible,
+      titleObservation: body.titleObservation,
+      isPack: body.isPack,
+      productId: body.productId,
+      modelStatId: body.modelStatId,
+      modelMoneyValueId: body.modelMoneyValueId,
+      modelPerColors: [
+        {
+          urlImage: body.modelPerColors[0].urlImage,
+          name: body.name,
+          gallery: [body.modelPerColors[0].urlImage],
+          modelProductId: body.productId,
+          color: body.modelPerColors[0].color,
+          clothingSize: size._id,
+        },
+      ],
+    });
+
+    await modelProduct.save();
+    res.status(201).send("Exitoso");
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
 router.get("/allProducts", async (req, res) => {
   try {
     const products = await Modelproduct.find();

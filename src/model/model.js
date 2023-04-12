@@ -1,7 +1,6 @@
 import mongoose, { mongo, Schema } from "mongoose";
 
 const ModelProductSchema = new mongoose.Schema({
-  _id: { type: Schema.Types.ObjectId, required: true },
   name: {
     type: String,
     required: true,
@@ -36,10 +35,6 @@ const ModelProductSchema = new mongoose.Schema({
   },
   modelPerColors: [
     {
-      _id: {
-        type: Schema.Types.ObjectId,
-        required: true,
-      },
       urlImage: {
         type: String,
         required: true,
@@ -115,10 +110,6 @@ const ModelMoneySchema = new mongoose.Schema({
 });
 
 const ClothingSizeSchema = new mongoose.Schema({
-  _id: {
-    type: Schema.Types.ObjectId,
-    required: true,
-  },
   disclamer: {
     type: String,
     required: true,
