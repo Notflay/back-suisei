@@ -674,4 +674,106 @@ router.post("/createCom", async (req, res) => {
   }
 });
 
+router.post("/searchForTitle/:id", async (req, res) => {
+  try {
+    const page = req.params.id;
+    const { body } = req;
+    const perPage = 9;
+
+    let prods = [{}];
+
+    const dataMayus = await Modelproduct.find({
+      name: new RegExp(`${body.name.toUpperCase()}`),
+    })
+      .populate("modelMoneyValueId")
+      .populate("modelPerColors.color");
+
+    prods = [...dataMayus];
+
+    const dataMinus = await Modelproduct.find({
+      name: new RegExp(`${body.name.toLowerCase()}`),
+    })
+      .populate("modelMoneyValueId")
+      .populate("modelPerColors.color");
+
+    const dataCap = await Modelproduct.find({
+      name: new RegExp(
+        `${
+          body.name.charAt(0).toUpperCase() + body.name.slice(1).toLowerCase()
+        }`
+      ),
+    })
+      .populate("modelMoneyValueId")
+      .populate("modelPerColors.color");
+
+    prods = [...dataMayus, ...dataMinus, ...dataCap];
+    console.log(prods);
+    const result = {
+      products: prods.slice((page - 1) * perPage, page * perPage),
+      totalItems: prods.length,
+    };
+    res.status(201).send(result);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/searchCarro/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    res.status(201).send(usuario);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/findModelState", async (req, res) => {
+  try {
+    /*  const resp = (await Modelproduct.find().populate("modelStatId")).filter(
+      (x) => (x.modelStatId.name = "OCULTO")
+    ); */
+
+    const resp = await Modelproduct.find().populate("modelStatId");
+    /*     const resp = await Modelproduct.updateMany({
+      modelStatId: Types.ObjectId(`5f39d30512aceb44597d79d2`),
+    }); */
+
+    res.status(201).send(resp);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.post("/updEstadoProd/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { body } = req;
+    console.log(body);
+    const prod = await Modelproduct.findByIdAndUpdate(
+      { _id: id },
+      {
+        modelStatId:
+          body.estado === "DISPONIBLE"
+            ? Types.ObjectId(`5f39d30512aceb44597d79d4`)
+            : Types.ObjectId(`5f39d30512aceb44597d79d2`),
+      }
+    );
+
+    res.status(201).send("Update exitoso");
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
+router.get("/reporteVentas", async (req, res) => {
+  try {
+    const comprobantes = await Comprobante.find();
+
+    res.status(201).send(comprobantes);
+  } catch (error) {
+    res.status(501).send(error.message);
+  }
+});
+
 export default router;

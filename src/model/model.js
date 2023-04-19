@@ -159,6 +159,7 @@ const UsuarioSchema = new mongoose.Schema({
       talla: { type: String, required: true },
     },
   ],
+  role: { type: String, default: "cliente" },
 });
 
 const ComprobanteSchema = new mongoose.Schema({
