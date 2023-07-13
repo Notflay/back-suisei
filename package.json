@@ -5,7 +5,7 @@
   "main": "mongos.js",
   "type": "commonjs",
   "engines": {
-    "node": "14.x"
+    "node": "18.x"
   },
   "scripts": {
     "dev": "nodemon src/mongos.js",
