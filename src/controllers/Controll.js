@@ -1,6 +1,8 @@
-import { Router } from "express";
-import { Types } from "mongoose";
-import {
+const { Router } = require("express");
+
+const { Types } = require("mongoose");
+
+const {
   Carrito,
   ClothingSize,
   Color,
@@ -10,8 +12,9 @@ import {
   ModelState,
   Product,
   Usuario,
-} from "../model/model";
-import Stripe from "stripe";
+} = require("../model/model");
+
+const Stripe = require("stripe");
 
 const router = Router();
 
@@ -776,4 +779,4 @@ router.get("/reporteVentas", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;
